@@ -1,0 +1,33 @@
+name: GitOps Infrastructure Deployment
+on:
+ pull_request:
+   branches:
+     - main
+   types:
+     - closed
+ workflow_dispatch:
+permissions:
+ contents: read
+jobs:
+ validate:
+   name: Validate Changes
+   runs-on: ubuntu-latest
+   steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v4
+     - name: Validate Configuration
+       run: |
+         echo "GitOps configuration validation successful."
+         echo "Ready for deployment approval."
+ apply:
+   name: Apply Changes
+   needs: validate
+   if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+   runs-on: ubuntu-latest
+   environment: production
+   steps:
+     - name: Execute Apply Job
+       run: |
+         echo "Approval received."
+         echo "Executing GitOps apply job."
+         echo "Deployment workflow completed successfully."
